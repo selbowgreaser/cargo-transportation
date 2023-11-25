@@ -10,7 +10,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequestMapping("/cargo")
+@RequestMapping("/api/v0/cargo")
 @RequiredArgsConstructor
 public class CargoController {
 
