@@ -3,6 +3,7 @@ package ru.fa.cargotransportation.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.fa.cargotransportation.model.Cargo;
@@ -22,7 +23,7 @@ public class CargoController {
     @Operation(summary = "Create a new cargo")
     @PostMapping
     @ResponseStatus(CREATED)
-    public Cargo create(Cargo cargo) {
+    public Cargo create(@Valid @RequestBody Cargo cargo) {
         return cargoService.save(cargo);
     }
 
@@ -47,7 +48,7 @@ public class CargoController {
     @Operation(summary = "Update an existing cargo")
     @PutMapping
     @ResponseStatus(NO_CONTENT)
-    public void update(Cargo updatedCargo) {
+    public void update(@RequestBody @Valid Cargo updatedCargo) {
         cargoService.update(updatedCargo);
     }
 
