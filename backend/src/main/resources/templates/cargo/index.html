@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargo List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Cargo List</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Content</th>
+            <th>Departure City</th>
+            <th>Departure Date</th>
+            <th>Arrival City</th>
+            <th>Arrival Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Используем Thymeleaf для циклического отображения данных -->
+        <tr th:each="cargo : ${allCargo}">
+            <td th:text="${cargo.getId()}"></td>
+            <td th:text="${cargo.getName()}"></td>
+            <td th:text="${cargo.getContent()}"></td>
+            <td th:text="${cargo.getDepartureCity()}"></td>
+            <td th:text="${cargo.getDepartureDate()}"></td>
+            <td th:text="${cargo.getArrivalCity()}"></td>
+            <td th:text="${cargo.getArrivalDate()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
