@@ -2,11 +2,11 @@ package ru.fa.cargotransportation.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.fa.cargotransportation.exception.CargoNotFoundException;
 import ru.fa.cargotransportation.model.Cargo;
 import ru.fa.cargotransportation.repository.CargoRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +19,7 @@ public class CargoService {
     }
 
     public Cargo findById(Integer id) {
-        return cargoRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return cargoRepository.findById(id).orElseThrow(CargoNotFoundException::new);
     }
 
     public Cargo save(Cargo cargo) {
