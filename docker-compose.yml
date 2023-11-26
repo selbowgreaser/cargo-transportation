@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  cargo-transportation-db:
+    image: 'postgres:16.0'
+    container_name: cargo-transportation-db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  cargo-transportation-backend:
+    container_name: cargo-transportation-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend-v0
+    ports:
+      - '8080:8080'
+    depends_on:
+      - cargo-transportation-db
+
+  cargo-transportation-frontend:
+    container_name: cargo-transportation-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend-v0
+    ports:
+      - '3000:3000'
