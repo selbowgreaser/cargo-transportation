@@ -19,12 +19,14 @@ services:
     image: backend-v0
     ports:
       - '8080:8080'
-    depends_on: cargo-transportation-db
+    depends_on:
+      - cargo-transportation-db
 
   cargo-transportation-frontend:
     container_name: cargo-transportation-frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: frontend-v0
     ports:
       - '3000:3000'
