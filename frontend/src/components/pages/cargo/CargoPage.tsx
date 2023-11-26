@@ -26,12 +26,16 @@ const CargoPage = () => {
                     cargoList={cargoList}
                     setFilteredCargoList={setFilteredCargoList}
                 />
-                <CargoItemList
-                    filteredCargoList={filteredCargoList}
-                    setFilteredCargoList={setFilteredCargoList}
-                    cargoList={cargoList}
-                    setCargoList={setCargoList}
-                />
+                {isCargoListLoading ?
+                    <div>Loading</div>
+                    :
+                    <CargoItemList
+                        filteredCargoList={filteredCargoList}
+                        setFilteredCargoList={setFilteredCargoList}
+                        cargoList={cargoList}
+                        setCargoList={setCargoList}
+                    />
+                }
             </div>
         </div>
     )

@@ -53,7 +53,7 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
         const newDateRange = rangeKeyDict.selection
         setDateRange(newDateRange)
 
-        if (newDateRange.endDate?.getDate()!! > newDateRange.startDate?.getDate()!!) {
+        if (newDateRange.endDate!! > newDateRange.startDate!!) {
             setIsDateRangeSelected(true)
             setIsDateRangePickerVisible(false);
         }
