@@ -1,18 +1,16 @@
 package ru.fa.cargotransportation.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.fa.cargotransportation.annotation.ValidDateRange;
 
 import java.time.LocalDate;
 
 @Setter
 @Getter
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@ValidDateRange
 @Table(name = "Cargo")
 public class Cargo {
 
