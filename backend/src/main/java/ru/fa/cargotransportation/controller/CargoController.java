@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v0/cargo")
 @RequiredArgsConstructor
