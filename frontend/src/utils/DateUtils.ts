@@ -7,8 +7,12 @@ export const formatDateRange = (dateRange: Range): string => {
     return `${dateRange.startDate?.toLocaleDateString()} - ${dateRange.endDate?.toLocaleDateString()}`
 }
 
-export const formatDateISO = (dateISO: string): string => {
+export const formatISODateToLocalDate = (dateISO: string): string => {
     return new Date(dateISO).toLocaleDateString()
+}
+
+export const formatLocalDateToISO = (localDate: Date): string => {
+    return localDate.toLocaleDateString('sv')
 }
 
 export const isInDateRange = (dateStr: string, dateRange: Range): boolean => {

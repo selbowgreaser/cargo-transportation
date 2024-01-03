@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Cargo} from "../../../api/models/Cargo";
-import {formatDateISO} from "../../../utils/DateUtils";
+import {formatISODateToLocalDate} from "../../../utils/DateUtils";
 import CargoEditModal from "./CargoEditModal";
 
 type CargoItemProps = {
@@ -23,13 +23,13 @@ const CargoItem: React.FC<CargoItemProps> = ({cargo, setCargo}) => {
                 {cargo.departureCity}
             </td>
             <td className="px-6 py-4">
-                {formatDateISO(cargo.departureDate)}
+                {formatISODateToLocalDate(cargo.departureDate)}
             </td>
             <td className="px-6 py-4">
                 {cargo.arrivalCity}
             </td>
             <td className="px-6 py-4">
-                {formatDateISO(cargo.arrivalDate)}
+                {formatISODateToLocalDate(cargo.arrivalDate)}
             </td>
             <td className="px-6 py-4 text-right">
                 <button
