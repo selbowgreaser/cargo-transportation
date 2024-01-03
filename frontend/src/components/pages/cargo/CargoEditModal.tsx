@@ -56,6 +56,8 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
         await CargoApiClient.updateCargo(cargo);
         setIsSuccessToast(true);
         setCargo(cargo);
+        setIsVisible(false)
+        setIsFormEdited(false)
     })
 
     const handleDateRangeClick = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
@@ -115,8 +117,6 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         updateCargo(formData);
-        setIsVisible(false)
-        setIsFormEdited(false)
     }
 
     return <div>
@@ -182,9 +182,9 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
                             </label>
                             <input
                                 type="text"
-                                name="arrivalCity"
-                                id="arrivalCity"
-                                value={formData.arrivalCity}
+                                name="departureCity"
+                                id="departureCity"
+                                value={formData.departureCity}
                                 onChange={handleChange}
                                 className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500 border-gray-200"
                             />
@@ -195,9 +195,9 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
                             </label>
                             <input
                                 type="text"
-                                name="departureCity"
-                                id="departureCity"
-                                value={formData.departureCity}
+                                name="arrivalCity"
+                                id="arrivalCity"
+                                value={formData.arrivalCity}
                                 onChange={handleChange}
                                 className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500 border-gray-200"
                             />
@@ -208,7 +208,7 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
                     <button
                         type="submit"
                         disabled={!isFormEdited}
-                        className={`${isFormEdited ? "bg-indigo-600 hover:bg-indigo-700" : "bg-gray-300"} w-[140px] h-[50px] text-white font-bold py-2 px-4 rounded focus:outline-none focus:border-indigo-700`}
+                        className={`${isFormEdited ? "bg-blue-600 hover:opacity-90" : "bg-gray-300"} w-[140px] h-[50px] text-white font-bold py-2 px-4 rounded focus:outline-none focus:border-indigo-700`}
                     >
                         {isCargoUpdating ?
                             <CustomLoader/>
@@ -227,7 +227,7 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
             </form>
         </CustomModal>
         <SuccessToast
-            message="Информация о грузе успешно обновлена!"
+            message="Информация о грузе успешно обновлена"
             show={isSuccessToast}
             onHide={() => setIsSuccessToast(false)}
         />
