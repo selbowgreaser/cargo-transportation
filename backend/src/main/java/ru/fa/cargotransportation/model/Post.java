@@ -3,6 +3,7 @@ package ru.fa.cargotransportation.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,6 +24,10 @@ public class Post {
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @CreatedBy
+    @Column(name = "created_by")
+    private String createdBy;
 
     @Column(name = "header", nullable = false)
     private String header;
