@@ -25,7 +25,7 @@ const SuccessToast: React.FC<SuccessToastProps> = ({message, show, onHide}) => {
         }
     }, [show, onHide]);
 
-    const toastClasses = `!z-[1010] fixed bottom-4 right-4 flex items-center space-x-3 p-6 rounded-lg shadow-lg transition-opacity duration-300 bg-green-500 text-white text-lg ${animateOut ? 'opacity-0' : 'opacity-100'}`;
+    const toastClasses = `!z-[1010] fixed bottom-4 right-4 flex items-center space-x-3 p-6 rounded-lg shadow-lg transition-opacity duration-300 bg-green-400 text-white text-lg ${animateOut ? 'opacity-0' : 'opacity-100'}`;
 
     return show ?
         <div className={toastClasses}>

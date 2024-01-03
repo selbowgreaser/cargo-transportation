@@ -1,10 +1,10 @@
 import {Cargo} from "../../../api/models/Cargo";
-import React from "react";
+import React, {useState} from "react";
 import CargoItem from "./CargoItem";
+import {useRequest} from "../../../hooks/useRequest";
 
 type CargoItemListProps = {
     filteredCargoList: Cargo[];
-    setFilteredCargoList: (cargo: Cargo[]) => void;
     cargoList: Cargo[];
     setCargoList: (cargo: Cargo[]) => void;
 }
@@ -12,28 +12,25 @@ type CargoItemListProps = {
 const CargoItemList: React.FC<CargoItemListProps> = (
     {
         filteredCargoList,
-        setFilteredCargoList,
         cargoList,
         setCargoList,
     }) => {
 
+    const [isToastVisible, setIsToastVisible] = useState(false);
+
+
     const setCargo = (cargo: Cargo) => {
-        setCargoInternal(cargo, cargoList, setFilteredCargoList)
-        setCargoInternal(cargo, filteredCargoList, setCargoList)
+        const index = cargoList.findIndex(it => it.id === cargo.id);
+        const updatedCargoList = [
+            ...cargoList.slice(0, index),
+            cargo,
+            ...cargoList.slice(index + 1)
+        ];
+        setCargoList(updatedCargoList);
     }
 
-    const setCargoInternal = (
-        cargo: Cargo,
-        listToUpdate: Cargo[],
-        updateList: (list: Cargo[]) => void,
-    ) => {
-        const index = listToUpdate.findIndex(it => it.id === cargo.id);
-        const updatedCargoList = [
-            ...listToUpdate.slice(0, index),
-            cargo,
-            ...listToUpdate.slice(index + 1)
-        ];
-        updateList(updatedCargoList);
+    const removeCargo = (cargo: Cargo) => {
+        setCargoList(cargoList.filter(it => it.id !== cargo.id))
     }
 
     return (
@@ -90,11 +87,14 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                             key={cargo.id}
                             cargo={cargo}
                             setCargo={setCargo}
+                            removeCargo={removeCargo}
+                            isToastVisible={isToastVisible}
+                            setIsToastVisible={setIsToastVisible}
                         />
                     ))
                     :
                     <div>
-                        No cargo found
+                        Грузы не найдены
                     </div>
                 }
                 </tbody>

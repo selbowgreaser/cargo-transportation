@@ -1,5 +1,5 @@
 import InputSelector from "../../InputSelector";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Cargo} from "../../../api/models/Cargo";
 import {Range, RangeKeyDict} from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -134,6 +134,10 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
         )
         setFilteredCargoList([...updatedCargoList])
     }
+
+    useEffect(() => {
+        filterCargoList()
+    }, [cargoList])
 
     return (
         <div className="max-w-screen-md">

@@ -31,7 +31,6 @@ const CargoPage = () => {
                     :
                     <CargoItemList
                         filteredCargoList={filteredCargoList}
-                        setFilteredCargoList={setFilteredCargoList}
                         cargoList={cargoList}
                         setCargoList={setCargoList}
                     />
