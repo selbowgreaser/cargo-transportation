@@ -1,5 +1,5 @@
 import InputSelector from "../../InputSelector";
-import React, {useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {Cargo} from "../../../api/models/Cargo";
 import {Range, RangeKeyDict} from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -9,13 +9,13 @@ import {formatDateRange, isInDateRange} from "../../../utils/DateUtils";
 
 type CargoSelectorBarProps = {
     cargoList: Cargo[]
-    setFilteredCargoList: (cargo: Cargo[]) => void;
+    setFilterPredicate: Dispatch<SetStateAction<(cargo: Cargo) => boolean>>
 }
 
 const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
     {
         cargoList,
-        setFilteredCargoList,
+        setFilterPredicate,
     }) => {
     const arrivalCities = Array.from(new Set(cargoList.map(it => it.arrivalCity)))
     const departureCities = Array.from(new Set(cargoList.map(it => it.departureCity)))
@@ -124,20 +124,13 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
         return isInDateRange(date, dateRange)
     }
 
-    const filterCargoList = () => {
-        const updatedCargoList = cargoList.filter(it =>
-            (selectedCargoName.length === 0 || it.name === selectedCargoName)
-            && (selectedArrivalCity.length === 0 || it.arrivalCity === selectedArrivalCity)
-            && (selectedDepartureCity.length === 0 || it.departureCity === selectedDepartureCity)
-            && isDateInSelectedRange(it.arrivalDate, isArrivalDateRangeSelected, arrivalDateRange)
-            && isDateInSelectedRange(it.departureDate, isDepartureDateRangeSelected, departureDateRange)
-        )
-        setFilteredCargoList([...updatedCargoList])
-    }
+    const filterCargoListPredicate = (it: Cargo) =>
+        (selectedCargoName.length === 0 || it.name === selectedCargoName)
+        && (selectedArrivalCity.length === 0 || it.arrivalCity === selectedArrivalCity)
+        && (selectedDepartureCity.length === 0 || it.departureCity === selectedDepartureCity)
+        && isDateInSelectedRange(it.arrivalDate, isArrivalDateRangeSelected, arrivalDateRange)
+        && isDateInSelectedRange(it.departureDate, isDepartureDateRangeSelected, departureDateRange)
 
-    useEffect(() => {
-        filterCargoList()
-    }, [cargoList])
 
     return (
         <div className="max-w-screen-md">
@@ -196,7 +189,7 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
                     </button>
                     <button
                         className="active:scale-95 rounded-lg bg-blue-600 px-8 py-2 font-medium text-white outline-none focus:ring hover:opacity-90"
-                        onClick={filterCargoList}
+                        onClick={() => setFilterPredicate(() => filterCargoListPredicate)}
                     >
                         Найти
                     </button>

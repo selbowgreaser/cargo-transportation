@@ -1,36 +1,73 @@
 import {Cargo} from "../../../api/models/Cargo";
-import React, {useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import CargoItem from "./CargoItem";
-import {useRequest} from "../../../hooks/useRequest";
+import {compareDates} from "../../../utils/DateUtils";
 
 type CargoItemListProps = {
-    filteredCargoList: Cargo[];
-    cargoList: Cargo[];
-    setCargoList: (cargo: Cargo[]) => void;
+    sortedAndFilteredCargoList: Cargo[];
+    setCargo: (cargo: Cargo) => void;
+    removeCargo: (cargo: Cargo) => void;
+    setComparator: Dispatch<SetStateAction<(a: Cargo, b: Cargo) => number>>;
+    filterPredicate: (cargo: Cargo) => void;
+}
+
+enum SortingState {
+    NOT_SELECTED,
+    ASCENDING,
+    DESCENDING,
 }
 
 const CargoItemList: React.FC<CargoItemListProps> = (
     {
-        filteredCargoList,
-        cargoList,
-        setCargoList,
+        sortedAndFilteredCargoList,
+        setCargo,
+        removeCargo,
+        setComparator,
+        filterPredicate,
     }) => {
 
     const [isToastVisible, setIsToastVisible] = useState(false);
+    const [departureDateSortingState, setDepartureDateSortingState] = useState(SortingState.NOT_SELECTED)
+    const [arrivalDateSortingState, setArrivalDateSortingState] = useState(SortingState.NOT_SELECTED)
 
-
-    const setCargo = (cargo: Cargo) => {
-        const index = cargoList.findIndex(it => it.id === cargo.id);
-        const updatedCargoList = [
-            ...cargoList.slice(0, index),
-            cargo,
-            ...cargoList.slice(index + 1)
-        ];
-        setCargoList(updatedCargoList);
+    const byDepartureDateComparator = (a: Cargo, b: Cargo) => {
+        const isAscending = departureDateSortingState === SortingState.ASCENDING
+        return compareDates(new Date(a.departureDate), new Date(b.departureDate), isAscending)
     }
 
-    const removeCargo = (cargo: Cargo) => {
-        setCargoList(cargoList.filter(it => it.id !== cargo.id))
+    const byArrivalDateComparator = (a: Cargo, b: Cargo) => {
+        const isAscending = arrivalDateSortingState === SortingState.ASCENDING
+        return compareDates(new Date(a.arrivalDate), new Date(b.arrivalDate), isAscending)
+    }
+
+    useEffect(() => {
+        if (departureDateSortingState !== SortingState.NOT_SELECTED) {
+            setComparator(() => byDepartureDateComparator)
+            setArrivalDateSortingState(SortingState.NOT_SELECTED)
+        }
+    }, [departureDateSortingState])
+
+    useEffect(() => {
+        if (arrivalDateSortingState !== SortingState.NOT_SELECTED) {
+            setComparator(() => byArrivalDateComparator)
+            setDepartureDateSortingState(SortingState.NOT_SELECTED)
+        }
+    }, [arrivalDateSortingState])
+
+    useEffect(() => {
+        setDepartureDateSortingState(SortingState.NOT_SELECTED)
+        setArrivalDateSortingState(SortingState.NOT_SELECTED)
+    }, [filterPredicate])
+
+    const switchSortingState = (
+        sortingState: SortingState,
+        setSortingState: (sortingState: SortingState) => void
+    ) => {
+        if (sortingState === SortingState.NOT_SELECTED || sortingState === SortingState.ASCENDING) {
+            setSortingState(SortingState.DESCENDING)
+        } else {
+            setSortingState(SortingState.ASCENDING)
+        }
     }
 
     return (
@@ -50,13 +87,41 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                     <th scope="col" className="px-6 py-3">
                         <div className="flex items-center">
                             Дата отправки
-                            <a href="frontend/src/components/cargo#">
-                                <svg className="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                     fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
-                                </svg>
-                            </a>
+                            <div
+                                className="cursor-pointer"
+                                onClick={() => switchSortingState(departureDateSortingState, setDepartureDateSortingState)}
+                            >
+                                {departureDateSortingState === SortingState.NOT_SELECTED
+                                    ?
+                                    <svg className="mx-2 h-4 w-4 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                         strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round"
+                                         strokeLinejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z"/>
+                                        <path d="M3 9l4-4l4 4m-4 -4v14"/>
+                                        <path d="M21 15l-4 4l-4-4m4 4v-14"/>
+                                    </svg>
+                                    :
+                                    departureDateSortingState === SortingState.DESCENDING
+                                        ?
+                                        <svg className="mx-2 h-4 w-4 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                             strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round"
+                                             strokeLinejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z"/>
+                                            <line x1="12" y1="5" x2="12" y2="19"/>
+                                            <line x1="16" y1="15" x2="12" y2="19"/>
+                                            <line x1="8" y1="15" x2="12" y2="19"/>
+                                        </svg>
+                                        :
+                                        <svg className="mx-2 h-4 w-4 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                             strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round"
+                                             strokeLinejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z"/>
+                                            <line x1="12" y1="5" x2="12" y2="19"/>
+                                            <line x1="16" y1="9" x2="12" y2="5"/>
+                                            <line x1="8" y1="9" x2="12" y2="5"/>
+                                        </svg>
+                                }
+                            </div>
                         </div>
                     </th>
                     <th scope="col" className="px-6 py-3">
@@ -65,13 +130,41 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                     <th scope="col" className="px-6 py-3">
                         <div className="flex items-center">
                             Дата прибытия
-                            <a href="frontend/src/components/cargo#">
-                                <svg className="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                     fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
-                                </svg>
-                            </a>
+                            <div
+                                className="cursor-pointer"
+                                onClick={() => switchSortingState(arrivalDateSortingState, setArrivalDateSortingState)}
+                            >
+                                {arrivalDateSortingState === SortingState.NOT_SELECTED
+                                    ?
+                                    <svg className="mx-2 h-4 w-4 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                         strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round"
+                                         strokeLinejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z"/>
+                                        <path d="M3 9l4-4l4 4m-4 -4v14"/>
+                                        <path d="M21 15l-4 4l-4-4m4 4v-14"/>
+                                    </svg>
+                                    :
+                                    arrivalDateSortingState === SortingState.DESCENDING
+                                        ?
+                                        <svg className="mx-2 h-4 w-4 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                             strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round"
+                                             strokeLinejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z"/>
+                                            <line x1="12" y1="5" x2="12" y2="19"/>
+                                            <line x1="16" y1="15" x2="12" y2="19"/>
+                                            <line x1="8" y1="15" x2="12" y2="19"/>
+                                        </svg>
+                                        :
+                                        <svg className="mx-2 h-4 w-4 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                             strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round"
+                                             strokeLinejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z"/>
+                                            <line x1="12" y1="5" x2="12" y2="19"/>
+                                            <line x1="16" y1="9" x2="12" y2="5"/>
+                                            <line x1="8" y1="9" x2="12" y2="5"/>
+                                        </svg>
+                                }
+                            </div>
                         </div>
                     </th>
                     <th scope="col" className="px-6 py-3">
@@ -80,9 +173,9 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                 </tr>
                 </thead>
                 <tbody>
-                {filteredCargoList.length
+                {sortedAndFilteredCargoList.length
                     ?
-                    filteredCargoList.map((cargo) => (
+                    sortedAndFilteredCargoList.map((cargo) => (
                         <CargoItem
                             key={cargo.id}
                             cargo={cargo}
@@ -96,6 +189,9 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                     <div>
                         Грузы не найдены
                     </div>
+                }
+                {
+                    sortedAndFilteredCargoList.length === 1 && <div className="mb-20"/>
                 }
                 </tbody>
             </table>
