@@ -27,6 +27,7 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
 
     const [isArrivalDateRangePickerVisible, setIsArrivalDateRangePickerVisible] = useState(false);
     const [isArrivalDateRangeSelected, setIsArrivalDateRangeSelected] = useState(false);
+    const [isArrivalStartDateSelect, setIsArrivalStartDateSelect] = useState(false);
     const [arrivalDateRange, setArrivalDateRange] = useState(
         {
             startDate: new Date(),
@@ -36,6 +37,7 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
     );
     const [isDepartureDateRangePickerVisible, setIsDepartureDateRangePickerVisible] = useState(false);
     const [isDepartureDateRangeSelected, setIsDepartureDateRangeSelected] = useState(false);
+    const [isDepartureStartDateSelect, setIsDepartureStartDateSelect] = useState(false);
     const [departureDateRange, setDepartureDateRange] = useState(
         {
             startDate: new Date(),
@@ -49,14 +51,22 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
         setDateRange: (newDateRange: Range) => void,
         setIsDateRangePickerVisible: (visible: boolean) => void,
         setIsDateRangeSelected: (selected: boolean) => void,
+        isStartDateSelect: boolean,
+        setIsStartDateSelect: (select: boolean) => void,
     ) => {
         const newDateRange = rangeKeyDict.selection
         setDateRange(newDateRange)
 
-        if (newDateRange.endDate!! > newDateRange.startDate!!) {
+        const startDate = newDateRange.startDate!!
+        const endDate = newDateRange.endDate!!
+
+        if ((endDate > startDate)
+            || (isStartDateSelect && endDate.toLocaleDateString() === startDate.toLocaleDateString())) {
             setIsDateRangeSelected(true)
             setIsDateRangePickerVisible(false);
         }
+
+        setIsStartDateSelect(!isStartDateSelect)
     }
 
     const handleArrivalDateRangeChange = (rangeKeyDict: RangeKeyDict) => {
@@ -65,6 +75,8 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
             setArrivalDateRange,
             setIsArrivalDateRangePickerVisible,
             setIsArrivalDateRangeSelected,
+            isArrivalStartDateSelect,
+            setIsArrivalStartDateSelect,
         )
     }
 
@@ -80,6 +92,8 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
             setDepartureDateRange,
             setIsDepartureDateRangePickerVisible,
             setIsDepartureDateRangeSelected,
+            isDepartureStartDateSelect,
+            setIsDepartureStartDateSelect,
         )
     }
 

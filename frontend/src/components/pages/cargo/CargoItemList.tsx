@@ -18,13 +18,22 @@ const CargoItemList: React.FC<CargoItemListProps> = (
     }) => {
 
     const setCargo = (cargo: Cargo) => {
-        const index = cargoList.findIndex(it => it.id === cargo.id);
+        setCargoInternal(cargo, cargoList, setFilteredCargoList)
+        setCargoInternal(cargo, filteredCargoList, setCargoList)
+    }
+
+    const setCargoInternal = (
+        cargo: Cargo,
+        listToUpdate: Cargo[],
+        updateList: (list: Cargo[]) => void,
+    ) => {
+        const index = listToUpdate.findIndex(it => it.id === cargo.id);
         const updatedCargoList = [
-            ...cargoList.slice(0, index),
+            ...listToUpdate.slice(0, index),
             cargo,
-            ...cargoList.slice(index + 1)
+            ...listToUpdate.slice(index + 1)
         ];
-        setCargoList(updatedCargoList);
+        updateList(updatedCargoList);
     }
 
     return (
