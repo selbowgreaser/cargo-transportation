@@ -89,7 +89,7 @@ const CargoPage: React.FC<CargoPageProps> = (
                         />
                     </div>
                     <CargoHistogram
-                        cargoList={cargoList}
+                        cargoList={sortedAndFilteredCargoList}
                     />
                 </div>
                 {isCargoListLoading ?
