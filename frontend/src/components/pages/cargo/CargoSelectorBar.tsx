@@ -133,7 +133,7 @@ const CargoSelectorBar: React.FC<CargoSelectorBarProps> = (
 
 
     return (
-        <div className="max-w-screen-md">
+        <div className="mt-auto w-3/5 align-bottom h-1/2">
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
                 <h2 className="text-stone-700 text-xl font-bold">Примените фильтры</h2>
                 <p className="mt-2 text-sm">Примените фильтры чтобы найти груз</p>

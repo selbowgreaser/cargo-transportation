@@ -47,3 +47,27 @@ export const compareDates = (date1: Date, date2: Date, isAscending: boolean = tr
         return -result
     }
 }
+
+export const addDays = (date: Date, days: number) => {
+    const dateCopy = new Date(date)
+    dateCopy.setDate(date.getDate() + days);
+    return dateCopy;
+}
+
+export const dateRange = (startDate: Date, stopDate: Date) => {
+    const dateRange = [];
+    let currentDate = startDate;
+    while (currentDate <= stopDate) {
+        dateRange.push(new Date (currentDate));
+        currentDate = addDays(currentDate, 1);
+    }
+    return dateRange;
+}
+
+export const findMinDate = (dates: Date[]) => {
+    return dates.reduce((a, b) => a < b ? a : b);
+}
+
+export const findMaxDate = (dates: Date[]) => {
+    return dates.reduce((a, b) => a > b ? a : b);
+}
