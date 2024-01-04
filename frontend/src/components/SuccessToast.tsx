@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomToast from "./pages/CustomToast";
+import CustomToast from "./CustomToast";
 
 type SuccessToastProps = {
     message: string;
