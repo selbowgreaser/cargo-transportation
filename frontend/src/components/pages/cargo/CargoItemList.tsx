@@ -2,6 +2,7 @@ import {Cargo} from "../../../api/models/Cargo";
 import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import CargoItem from "./CargoItem";
 import {compareDates} from "../../../utils/DateUtils";
+import CustomLoader from "../../CustomLoader";
 
 type CargoItemListProps = {
     sortedAndFilteredCargoList: Cargo[];
@@ -186,15 +187,18 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                         />
                     ))
                     :
-                    <div>
-                        Грузы не найдены
-                    </div>
+                    <div/>
                 }
                 {
                     sortedAndFilteredCargoList.length === 1 && <div className="mb-20"/>
                 }
                 </tbody>
             </table>
+            {!sortedAndFilteredCargoList.length &&
+                <div className="h-[200px] flex items-center justify-center">
+                    Грузы не найдены
+                </div>
+            }
         </div>
     )
 }

@@ -8,6 +8,7 @@ export const useRequest = (callback: CallbackFunctionType): [CallbackFunctionTyp
 
     const makeRequest = async (...args: any[]) => {
         try {
+            setError("")
             setIsLoading(true)
             await callback(...args)
         } catch (e) {

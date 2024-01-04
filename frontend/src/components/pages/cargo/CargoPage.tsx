@@ -75,7 +75,7 @@ const CargoPage: React.FC<CargoPageProps> = (
             <div className="w-2/3">
                 <div className="flex flex-row">
                     <div className="mt-auto">
-                        <div className="mb-20 ml-2 text-stone-700">
+                        <div className="mb-10 ml-2 text-stone-700">
                             <div className="text-3xl font-bold">
                                 Список грузов
                             </div>
@@ -89,7 +89,7 @@ const CargoPage: React.FC<CargoPageProps> = (
                         />
                     </div>
                     <CargoHistogram
-                        cargoList={cargoList}
+                        cargoList={sortedAndFilteredCargoList}
                     />
                 </div>
                 {isCargoListLoading ?
