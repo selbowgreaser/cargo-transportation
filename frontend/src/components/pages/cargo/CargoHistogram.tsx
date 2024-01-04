@@ -64,10 +64,6 @@ const CargoHistogram: React.FC<CargoHistogramProps> = ({cargoList}) => {
 
     const arrivalCountsByDay = countsByDatesInRange(cargo => new Date(cargo.arrivalDate).getTime())
 
-    const totalDeparted = departureCountsByDay.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue
-    }, 0)
-
     const series = [
         {
             name: 'Отправлено',
@@ -135,7 +131,7 @@ const CargoHistogram: React.FC<CargoHistogramProps> = ({cargoList}) => {
                 </div>
                 <div>
                     <h5 className="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
-                        {totalDeparted}
+                        {cargoList.length}
                     </h5>
                     <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
                         Грузов всего отправлено
