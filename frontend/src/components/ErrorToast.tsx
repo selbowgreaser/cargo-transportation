@@ -1,17 +1,17 @@
 import React from 'react';
 import CustomToast from "./pages/CustomToast";
 
-type SuccessToastProps = {
+type ErrorToastProps = {
     message: string;
     show: boolean;
     onHide: () => void;
 }
 
-const SuccessToast: React.FC<SuccessToastProps> = ({message, show, onHide}) => {
+const ErrorToast: React.FC<ErrorToastProps> = ({message, show, onHide}) => {
 
     return <CustomToast show={show} onHide={onHide}>
         <div
-            className="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            className="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert">
             <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                  fill="currentColor" viewBox="0 0 20 20">
@@ -26,4 +26,4 @@ const SuccessToast: React.FC<SuccessToastProps> = ({message, show, onHide}) => {
     </CustomToast>
 };
 
-export default SuccessToast;
+export default ErrorToast;

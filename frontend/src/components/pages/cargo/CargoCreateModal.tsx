@@ -1,73 +1,61 @@
+import CustomModal from "../../CustomModal";
+import CustomDateRangePicker from "../../CustomDateRangePicker";
+import {formatDateRange, formatLocalDateToISO} from "../../../utils/DateUtils";
+import CustomLoader from "../../CustomLoader";
+import SuccessToast from "../../SuccessToast";
 import React, {useEffect, useState} from "react";
 import {Cargo} from "../../../api/models/Cargo";
-import CustomModal from "../../CustomModal";
-import {EditCargoFormData} from "../../models/EditCargoFormData";
 import {Range, RangeKeyDict} from "react-date-range";
-import {formatDateRange, formatLocalDateToISO} from "../../../utils/DateUtils";
-import CustomDateRangePicker from "../../CustomDateRangePicker";
-import SuccessToast from "../../SuccessToast";
 import {useRequest} from "../../../hooks/useRequest";
 import CargoApiClient from "../../../api/CargoApiClient";
-import CustomLoader from "../../CustomLoader";
+import {CreateCargoFormData} from "../../models/CreateCargoFormData";
 import {isDateRangeSelected} from "../../../utils/DateRangeUtils";
 import ErrorToast from "../../ErrorToast";
 
-type CargoEditModalProps = {
-    cargo: Cargo;
-    setCargo: (cargo: Cargo) => void;
+type CargoCreateModalProps = {
+    addCargo: (cargo: Cargo) => void;
     isVisible: boolean;
     setIsVisible: (isVisible: boolean) => void;
 }
 
-const CargoEditModal: React.FC<CargoEditModalProps> = (
+const CargoCreateModal: React.FC<CargoCreateModalProps> = (
     {
-        cargo,
-        setCargo,
+        addCargo,
         isVisible,
         setIsVisible,
-    }) => {
+    }
+) => {
 
-    const getFormData = (cargo: Cargo): EditCargoFormData => {
-        return {
-            id: cargo.id,
-            name: cargo.name,
-            content: cargo.content,
-            departureCity: cargo.departureCity,
-            departureDate: cargo.departureDate,
-            arrivalCity: cargo.arrivalCity,
-            arrivalDate: cargo.arrivalDate,
-        } as EditCargoFormData
+    const defaultFormData = {
+        arrivalCity: "",
+        arrivalDate: "",
+        content: "",
+        departureCity: "",
+        departureDate: "",
+        name: ""
     }
 
-    const [formData, setFormData] = useState<EditCargoFormData>(getFormData(cargo));
-    const [isFormEdited, setIsFormEdited] = useState(false)
+    const [formData, setFormData] = useState<CreateCargoFormData>(defaultFormData);
+    const [isFormFilled, setIsFormFilled] = useState(false)
 
     const [isDateRangePickerVisible, setIsDateRangePickerVisible] = useState(false);
     const [isStartDateSelect, setIsStartDateSelect] = useState(false)
     const [dateRange, setDateRange] = useState(
         {
-            startDate: new Date(cargo.departureDate),
-            endDate: new Date(cargo.arrivalDate),
+            startDate: new Date(),
+            endDate: new Date(),
             key: 'selection',
         } as Range,
     );
     const [isSuccessToast, setIsSuccessToast] = useState(false);
     const [isFailToast, setIsFailToast] = useState(false);
 
-    const [updateCargo, isCargoUpdating, error] = useRequest(async (cargo) => {
+    const [createCargo, isCargoCreating, error] = useRequest(async (cargo) => {
         setIsSuccessToast(false);
-        await CargoApiClient.updateCargo(cargo);
+        const newCargo = await CargoApiClient.createCargo(cargo);
         setIsSuccessToast(true);
-        setCargo(cargo);
-        setFormData(getFormData(cargo));
-        setIsVisible(false);
-        setIsStartDateSelect(false);
-        setIsDateRangePickerVisible(false);
-        setDateRange({
-            startDate: new Date(cargo.departureDate),
-            endDate: new Date(cargo.arrivalDate),
-            key: 'selection',
-        } as Range);
+        addCargo(newCargo);
+        handleClose();
     })
 
     const handleDateRangeClick = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
@@ -95,35 +83,35 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
         setFormData({...formData, [e.target.name]: e.target.value});
     };
 
-    useEffect(() => {
-        if (cargo.name === formData.name
-            && cargo.content === formData.content
-            && cargo.departureDate === formData.departureDate
-            && cargo.departureCity === formData.departureCity
-            && cargo.arrivalDate === formData.arrivalDate
-            && cargo.arrivalCity === formData.arrivalCity) {
-            setIsFormEdited(false)
-        } else {
-            setIsFormEdited(true)
-        }
-    }, [formData]);
-
     const handleClose = () => {
-        setFormData(getFormData(cargo));
+        setFormData(defaultFormData)
         setIsVisible(false);
         setIsStartDateSelect(false);
         setIsDateRangePickerVisible(false);
         setDateRange({
-            startDate: new Date(cargo.departureDate),
-            endDate: new Date(cargo.arrivalDate),
+            startDate: new Date(),
+            endDate: new Date(),
             key: 'selection',
         } as Range);
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        updateCargo(formData);
+        createCargo(formData);
     }
+
+    useEffect(() => {
+        if (formData.name
+            && formData.content
+            && formData.departureDate
+            && formData.departureCity
+            && formData.arrivalDate
+            && formData.arrivalCity) {
+            setIsFormFilled(true);
+        } else {
+            setIsFormFilled(false);
+        }
+    }, [formData]);
 
     useEffect(() => {
         if (error) {
@@ -138,8 +126,8 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
             onClose={handleClose}
         >
             <form onSubmit={handleSubmit} className="bg-white rounded-xl px-8 pt-6 pb-8 w-[700px] h-[450px]">
-                <h2 className="text-xl font-bold mb-4">Изменить данные</h2>
-                <p className="mb-6 text-gray-600">Обновите информацию о грузе</p>
+                <h2 className="text-xl font-bold mb-4">Добать груз</h2>
+                <p className="mb-6 text-gray-600">Заполните информацию о грузе</p>
 
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-4 mb-4">
@@ -220,10 +208,10 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
                 <div className="flex items-center justify-end mt-10 space-x-4">
                     <button
                         type="submit"
-                        disabled={!isFormEdited}
-                        className={`${isFormEdited ? "bg-blue-600 hover:opacity-90" : "bg-gray-300"} w-[140px] h-[50px] text-white font-bold py-2 px-4 rounded focus:outline-none focus:border-indigo-700`}
+                        disabled={!isFormFilled}
+                        className={`${isFormFilled ? "bg-blue-600 hover:opacity-90" : "bg-gray-300"} w-[140px] h-[50px] text-white font-bold py-2 px-4 rounded focus:outline-none focus:border-indigo-700`}
                     >
-                        {isCargoUpdating ?
+                        {isCargoCreating ?
                             <CustomLoader/>
                             :
                             `Сохранить`
@@ -240,16 +228,16 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
             </form>
         </CustomModal>
         <SuccessToast
-            message="Информация о грузе успешно обновлена"
+            message="Груз успешно сохранен"
             show={isSuccessToast}
             onHide={() => setIsSuccessToast(false)}
         />
         <ErrorToast
-            message={"Произошла ошибка при обновлении груза"}
+            message={"Произошла ошибка при добавлении груза"}
             show={isFailToast}
             onHide={() => setIsFailToast(false)}
         />
     </div>
 }
 
-export default CargoEditModal;
+export default CargoCreateModal;

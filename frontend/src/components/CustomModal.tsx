@@ -22,8 +22,17 @@ const CustomModal: React.FC<CustomModalProps> = (
     return (
         <>
             <Modal isOpen={isVisible} onClose={onClose}>
-                <ModalOverlay onClick={onClose} className="bg-[#000] !opacity-30"/>
-                <ModalContent className="!z-[1002] !m-auto !w-max min-w-[350px] !max-w-[50%] md:top-[30vh]">
+                <ModalOverlay
+                    onClick={onClose}
+                    className="bg-[#000] !opacity-30"
+                    zIndex="2000"
+                />
+                <ModalContent
+                    className="!m-auto !w-max min-w-[350px] !max-w-[50%] md:top-[30vh]"
+                    containerProps={{
+                        zIndex: "2000",
+                    }}
+                >
                     <ModalBody>
                         {children}
                     </ModalBody>
