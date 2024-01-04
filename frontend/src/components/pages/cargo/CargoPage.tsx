@@ -4,6 +4,7 @@ import CargoApiClient from "../../../api/CargoApiClient";
 import CargoItemList from "./CargoItemList";
 import CargoSelectorBar from "./CargoSelectorBar";
 import {useRequest} from "../../../hooks/useRequest";
+import CargoHistogram from "./CargoHistogram";
 
 const CargoPage = () => {
     const [cargoList, setCargoList] = useState<Cargo[]>([])
@@ -56,10 +57,15 @@ const CargoPage = () => {
     return (
         <div className="flex justify-center h-screen my-24">
             <div className="w-2/3">
-                <CargoSelectorBar
-                    cargoList={cargoList}
-                    setFilterPredicate={setFilterPredicate}
-                />
+                <div className="flex flex-row">
+                    <CargoSelectorBar
+                        cargoList={cargoList}
+                        setFilterPredicate={setFilterPredicate}
+                    />
+                    <CargoHistogram
+                        cargoList={cargoList}
+                    />
+                </div>
                 {isCargoListLoading ?
                     <div>Loading</div>
                     :
