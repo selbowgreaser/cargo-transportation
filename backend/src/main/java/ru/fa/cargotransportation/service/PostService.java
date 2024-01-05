@@ -1,6 +1,7 @@
 package ru.fa.cargotransportation.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.fa.cargotransportation.exception.PostNotFoundException;
 import ru.fa.cargotransportation.model.Post;
@@ -15,7 +16,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     public List<Post> findAll() {
-        return postRepository.findAll();
+        return postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     public Post findById(Integer id) {
