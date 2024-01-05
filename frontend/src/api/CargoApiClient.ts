@@ -20,7 +20,7 @@ export default class CargoApiClient {
         await axios.delete(`http://localhost:8080/api/v0/cargo/${cargo.id}`, authRequestConfig());
     }
 
-    static async createCargo(cargo: Cargo) {
+    static async createCargo(cargo: Cargo): Promise<Cargo> {
         console.log('POST /api/v0/cargo');
         const response = await axios.post('http://localhost:8080/api/v0/cargo', cargo, authRequestConfig());
         return response.data

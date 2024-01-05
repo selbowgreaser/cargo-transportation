@@ -3,6 +3,7 @@ import PostItem from "./PostItem";
 import {useRequest} from "../../../hooks/useRequest";
 import {Post} from "../../../api/models/Post";
 import PostApiClient from "../../../api/PostApiClient";
+import PostCreateModal from "./PostCreateModal";
 
 type PostsPageProps = {
     isCreateModalOpened: boolean;
@@ -21,6 +22,10 @@ const PostsPage: React.FC<PostsPageProps> = (
         const posts = await PostApiClient.findAllPosts();
         setPosts([...posts]);
     });
+
+    const addPost = (post: Post) => {
+        setPosts([...posts, post]);
+    }
 
     useEffect(() => {
         fetchPosts();
@@ -53,6 +58,11 @@ const PostsPage: React.FC<PostsPageProps> = (
 
             </div>
         </div>
+        <PostCreateModal
+            addPost={addPost}
+            isVisible={isCreateModalOpened}
+            setIsVisible={setIsCreateModalOpened}
+        />
     </section>
 }
 
