@@ -26,8 +26,9 @@ public class Post {
     private LocalDateTime createdAt;
 
     @CreatedBy
-    @Column(name = "created_by")
-    private String createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "username")
+    private User createdBy;
 
     @Column(name = "header", nullable = false)
     private String header;

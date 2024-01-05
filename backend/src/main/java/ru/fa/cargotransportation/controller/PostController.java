@@ -10,9 +10,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.fa.cargotransportation.model.Post;
 import ru.fa.cargotransportation.service.PostService;
+import ru.fa.cargotransportation.service.dto.CreatedPostDto;
 import ru.fa.cargotransportation.service.dto.PostDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -28,15 +30,15 @@ public class PostController {
     @Operation(summary = "Create a new post")
     @PostMapping
     @ResponseStatus(CREATED)
-    public Post create(@Valid @RequestBody PostDto postDto) {
-        return postService.save(postDtoToPost(postDto));
+    public CreatedPostDto create(@Valid @RequestBody PostDto postDto) {
+        return mapPostToCreatedPostDto(postService.save(mapPostDtoToPost(postDto)));
     }
 
     @Operation(summary = "Get a list of all posts")
     @GetMapping
     @ResponseStatus(OK)
-    public List<Post> findAll() {
-        return postService.findAll();
+    public List<CreatedPostDto> findAll() {
+        return mapPostsToCreatedPostDtos(postService.findAll());
     }
 
     @Operation(summary = "Get post by ID")
@@ -46,8 +48,8 @@ public class PostController {
     })
     @GetMapping("/{id}")
     @ResponseStatus(OK)
-    public Post findById(@PathVariable("id") Integer id) {
-        return postService.findById(id);
+    public CreatedPostDto findById(@PathVariable("id") Integer id) {
+        return mapPostToCreatedPostDto(postService.findById(id));
     }
 
     @Operation(summary = "Update an existing post")
@@ -55,7 +57,7 @@ public class PostController {
     @ResponseStatus(NO_CONTENT)
     @PreAuthorize("@postSecurityService.isPostOwner(authentication, #postDto)")
     public void update(@RequestBody @Valid PostDto postDto) {
-        Post post = postDtoToPost(postDto);
+        Post post = mapPostDtoToPost(postDto);
         postService.update(post);
     }
 
@@ -71,7 +73,17 @@ public class PostController {
         postService.deleteById(id);
     }
 
-    private Post postDtoToPost(PostDto postDto) {
+    private Post mapPostDtoToPost(PostDto postDto) {
         return modelMapper.map(postDto, Post.class);
+    }
+
+    private CreatedPostDto mapPostToCreatedPostDto(Post post) {
+        return modelMapper.createTypeMap(Post.class, CreatedPostDto.class)
+                .addMapping(post1 -> post1.getCreatedBy().getUsername(), CreatedPostDto::setCreatedBy)
+                .map(post);
+    }
+
+    private List<CreatedPostDto> mapPostsToCreatedPostDtos(List<Post> posts) {
+        return posts.stream().map(this::mapPostToCreatedPostDto).collect(Collectors.toList());
     }
 }
