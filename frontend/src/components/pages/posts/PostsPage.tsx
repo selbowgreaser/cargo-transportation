@@ -4,6 +4,7 @@ import {useRequest} from "../../../hooks/useRequest";
 import {Post} from "../../../api/models/Post";
 import PostApiClient from "../../../api/PostApiClient";
 import PostCreateModal from "./PostCreateModal";
+import CustomLoader from "../../CustomLoader";
 
 type PostsPageProps = {
     isCreateModalOpened: boolean;
@@ -16,7 +17,9 @@ const PostsPage: React.FC<PostsPageProps> = (
         setIsCreateModalOpened,
     }
 ) => {
-    const [posts, setPosts] = useState<Post[]>([])
+    const [posts, setPosts] = useState<Post[]>([]);
+
+    const [isToastVisible, setIsToastVisible] = useState(false);
 
     const [fetchPosts, isFetching, error] = useRequest(async () => {
         const posts = await PostApiClient.findAllPosts();
@@ -24,12 +27,26 @@ const PostsPage: React.FC<PostsPageProps> = (
     });
 
     const addPost = (post: Post) => {
-        setPosts([...posts, post]);
+        setPosts([post, ...posts]);
     }
 
     useEffect(() => {
         fetchPosts();
     }, []);
+
+    const setPost = (post: Post) => {
+        const index = posts.findIndex(it => it.id === post.id);
+        const updatedPosts = [
+            ...posts.slice(0, index),
+            post,
+            ...posts.slice(index + 1)
+        ];
+        setPosts(updatedPosts);
+    }
+
+    const removePost = (post: Post) => {
+        setPosts(posts.filter(it => it.id !== post.id));
+    }
 
     return <section className="bg-white dark:bg-gray-900 my-24">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -41,22 +58,31 @@ const PostsPage: React.FC<PostsPageProps> = (
                     Здесь можно читать посты других пользователей или написать свой
                 </p>
             </div>
-            <div className="grid gap-8 lg:grid-cols-2">
-                {posts.length
-                    ?
-                    posts.map((post) => (
-                        <PostItem
-                            key={post.id}
-                            post={post}
-                            setPost={() => console.log("setPost")}
-                            removePost={() => console.log("removePost")}
-                        />
-                    ))
-                    :
-                    <div/>
-                }
+            {!isFetching
+                ?
+                <div className="grid gap-8 lg:grid-cols-2">
+                    {posts.length
+                        ?
+                        posts.map((post) => (
+                            <PostItem
+                                key={post.id}
+                                post={post}
+                                setPost={setPost}
+                                removePost={removePost}
+                                isToastVisible={isToastVisible}
+                                setIsToastVisible={setIsToastVisible}
+                            />
+                        ))
+                        :
+                        <div/>
+                    }
 
-            </div>
+                </div>
+                :
+                <div className="h-[200px] flex items-center justify-center">
+                    <CustomLoader/>
+                </div>
+            }
         </div>
         <PostCreateModal
             addPost={addPost}

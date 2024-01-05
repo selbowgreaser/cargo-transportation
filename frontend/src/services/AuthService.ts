@@ -11,6 +11,10 @@ class LocalStorageKeys {
     static get usernameKey() {
         return "cargo-express-username";
     }
+
+    static get userRoleKey() {
+        return "cargo-express-user-role";
+    }
 }
 
 export default class AuthService {
@@ -22,13 +26,7 @@ export default class AuthService {
         }
 
         await AuthApiClient.register(user);
-
-        const response = await AuthApiClient.login(user)
-
-        if (response["jwt-token"]) {
-            localStorage.setItem(LocalStorageKeys.userAuthHeaderKey, `Bearer ${response["jwt-token"]}`);
-            localStorage.setItem(LocalStorageKeys.usernameKey, formData.username);
-        }
+        await this.login(user)
     }
 
     static async login(formData: SignInFormData) {
@@ -37,16 +35,21 @@ export default class AuthService {
             password: formData.password
         })
 
-        if (response["jwt-token"]) {
-            localStorage.setItem(LocalStorageKeys.userAuthHeaderKey, `Bearer ${response["jwt-token"]}`);
-            localStorage.setItem(LocalStorageKeys.usernameKey, formData.username);
+        if (response.token) {
+            localStorage.setItem(LocalStorageKeys.userAuthHeaderKey, `Bearer ${response.token}`);
+            localStorage.setItem(LocalStorageKeys.usernameKey, response.username);
+            localStorage.setItem(LocalStorageKeys.userRoleKey, response.role);
             return true
         }
         return false
     }
 
-    static username() {
+    static  username() {
         return localStorage.getItem(LocalStorageKeys.usernameKey);
+    }
+
+    static isAdmin() {
+        return localStorage.getItem(LocalStorageKeys.userRoleKey) === 'ROLE_ADMIN';
     }
 
     static logout() {
