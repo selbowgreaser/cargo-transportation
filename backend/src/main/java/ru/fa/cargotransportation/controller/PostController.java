@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.fa.cargotransportation.model.Post;
 import ru.fa.cargotransportation.service.PostService;
+import ru.fa.cargotransportation.service.dto.PostDto;
 
 import java.util.List;
 
@@ -20,12 +23,13 @@ import static org.springframework.http.HttpStatus.*;
 public class PostController {
 
     private final PostService postService;
+    private final ModelMapper modelMapper;
 
     @Operation(summary = "Create a new post")
     @PostMapping
     @ResponseStatus(CREATED)
-    public Post create(@Valid @RequestBody Post post) {
-        return postService.save(post);
+    public Post create(@Valid @RequestBody PostDto postDto) {
+        return postService.save(postDtoToPost(postDto));
     }
 
     @Operation(summary = "Get a list of all posts")
@@ -49,8 +53,10 @@ public class PostController {
     @Operation(summary = "Update an existing post")
     @PutMapping
     @ResponseStatus(NO_CONTENT)
-    public void update(@RequestBody @Valid Post updatedPost) {
-        postService.update(updatedPost);
+    @PreAuthorize("@postSecurityService.isPostOwner(authentication, #postDto)")
+    public void update(@RequestBody @Valid PostDto postDto) {
+        Post post = postDtoToPost(postDto);
+        postService.update(post);
     }
 
     @Operation(summary = "Delete post by ID")
@@ -60,7 +66,12 @@ public class PostController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ADMIN') or @postSecurityService.isPostOwner(authentication, #id)")
     public void deleteById(@PathVariable("id") Integer id) {
         postService.deleteById(id);
+    }
+
+    private Post postDtoToPost(PostDto postDto) {
+        return modelMapper.map(postDto, Post.class);
     }
 }
