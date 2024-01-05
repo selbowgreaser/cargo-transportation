@@ -10,8 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.fa.cargotransportation.model.Post;
 import ru.fa.cargotransportation.service.PostService;
-import ru.fa.cargotransportation.service.dto.CreatedPostDto;
-import ru.fa.cargotransportation.service.dto.PostDto;
+import ru.fa.cargotransportation.controller.dto.CreatedPostDto;
+import ru.fa.cargotransportation.controller.dto.PostDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

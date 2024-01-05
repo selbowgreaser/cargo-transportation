@@ -1,4 +1,4 @@
-package ru.fa.cargotransportation.service.dto;
+package ru.fa.cargotransportation.controller.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
