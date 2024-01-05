@@ -2,7 +2,6 @@ import {Cargo} from "../../../api/models/Cargo";
 import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import CargoItem from "./CargoItem";
 import {compareDates} from "../../../utils/DateUtils";
-import CustomLoader from "../../CustomLoader";
 
 type CargoItemListProps = {
     sortedAndFilteredCargoList: Cargo[];
@@ -174,8 +173,7 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                 </tr>
                 </thead>
                 <tbody>
-                {sortedAndFilteredCargoList.length
-                    ?
+                {sortedAndFilteredCargoList.length > 0 &&
                     sortedAndFilteredCargoList.map((cargo) => (
                         <CargoItem
                             key={cargo.id}
@@ -186,8 +184,6 @@ const CargoItemList: React.FC<CargoItemListProps> = (
                             setIsToastVisible={setIsToastVisible}
                         />
                     ))
-                    :
-                    <div/>
                 }
                 {
                     sortedAndFilteredCargoList.length === 1 && <div className="mb-20"/>

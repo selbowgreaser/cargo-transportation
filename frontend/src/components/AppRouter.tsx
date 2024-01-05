@@ -4,6 +4,7 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import CargoPage from "./pages/cargo/CargoPage";
 import SingUpPage from "./pages/auth/SingUpPage";
 import NotFoundPage from "./pages/not-found/NotFoundPage";
+import PostsPage from "./pages/posts/PostsPage";
 
 export const pagesWithAvailableCreation = ["/posts", "/cargo"]
 
@@ -37,6 +38,15 @@ const AppRouter: React.FC<AppRouterProps> = (
                     path={"/cargo"}
                     element={
                         <CargoPage
+                            isCreateModalOpened={isCreateModalOpened}
+                            setIsCreateModalOpened={setIsCreateModalOpened}
+                        />
+                    }
+                />
+                <Route
+                    path={"/posts"}
+                    element={
+                        <PostsPage
                             isCreateModalOpened={isCreateModalOpened}
                             setIsCreateModalOpened={setIsCreateModalOpened}
                         />
