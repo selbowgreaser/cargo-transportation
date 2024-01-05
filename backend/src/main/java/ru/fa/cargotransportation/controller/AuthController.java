@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.fa.cargotransportation.controller.dto.AuthDto;
 import ru.fa.cargotransportation.model.User;
 import ru.fa.cargotransportation.security.JWTUtil;
+import ru.fa.cargotransportation.security.UserDetails;
 import ru.fa.cargotransportation.service.RegistrationService;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -44,12 +46,13 @@ public class AuthController {
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(user.getUsername(),
                         user.getPassword());
-        authenticationManager.authenticate(authInputToken);
+        Authentication authenticate = authenticationManager.authenticate(authInputToken);
+        String role = ((UserDetails) authenticate.getPrincipal()).user().getRole();
         String token = jwtUtil.generateToken(user.getUsername());
 
         return AuthDto.builder()
                 .username(user.getUsername())
-                .role(user.getRole())
+                .role(role)
                 .token(token)
                 .build();
     }
