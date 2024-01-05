@@ -7,7 +7,7 @@ import ru.fa.cargotransportation.exception.PostNotFoundException;
 import ru.fa.cargotransportation.model.Post;
 import ru.fa.cargotransportation.model.User;
 import ru.fa.cargotransportation.repository.PostRepository;
-import ru.fa.cargotransportation.service.dto.PostDto;
+import ru.fa.cargotransportation.controller.dto.PostDto;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +20,7 @@ public class PostSecurityService {
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
-        return post.getCreatedBy().equals(user.getUsername());
+        return post.getCreatedBy().getUsername().equals(user.getUsername());
     }
 
     public boolean isPostOwner(Authentication authentication, PostDto postDto) {
