@@ -6,7 +6,7 @@ import NavigationBar from "./components/NavigationBar";
 import SignInModal from "./components/pages/auth/SignInModal";
 import AuthService from "./services/AuthService";
 import {AuthContext} from "./context/AuthContext";
-import SingUpPage from "./components/pages/auth/SingUpPage";
+import AppRouter from "./components/AppRouter";
 
 function App() {
     const [isAuth, setIsAuth] = useState(AuthService.isAuth())
@@ -25,17 +25,11 @@ function App() {
                         setIsCreateModalOpened={setIsCreateModalOpened}
                         setIsSignInModalOpened={setIsSignInModalOpened}
                     />
-                    {isAuth
-                        ?
-                        <CargoPage
-                            isCreateModalOpened={isCreateModalOpened}
-                            setIsCreateModalOpened={setIsCreateModalOpened}
-                        />
-                        :
-                        <SingUpPage
-                            setIsSignInModalOpened={setIsSignInModalOpened}
-                        />
-                    }
+                    <AppRouter
+                        isCreateModalOpened={isCreateModalOpened}
+                        setIsCreateModalOpened={setIsCreateModalOpened}
+                        setIsSignInModalOpened={setIsSignInModalOpened}
+                    />
                     <SignInModal
                         isVisible={isSignInModalOpened}
                         setIsVisible={setIsSignInModalOpened}
