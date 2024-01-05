@@ -5,6 +5,8 @@ import CargoPage from "./pages/cargo/CargoPage";
 import SingUpPage from "./pages/auth/SingUpPage";
 import NotFoundPage from "./pages/not-found/NotFoundPage";
 
+export const pagesWithAvailableCreation = ["/posts", "/cargo"]
+
 type AppRouterProps = {
     isCreateModalOpened: boolean;
     setIsCreateModalOpened: (isOpened: boolean) => void;
