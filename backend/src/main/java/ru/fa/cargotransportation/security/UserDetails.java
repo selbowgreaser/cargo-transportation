@@ -1,15 +1,17 @@
 package ru.fa.cargotransportation.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.fa.cargotransportation.model.User;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public record UserDetails(User user) implements org.springframework.security.core.userdetails.UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
     }
 
     @Override

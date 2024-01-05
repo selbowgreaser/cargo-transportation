@@ -27,7 +27,12 @@ public class PostService {
     }
 
     public void update(Post updatedPost) {
-        postRepository.save(updatedPost);
+        Post post = postRepository.findById(updatedPost.getId()).orElseThrow(PostNotFoundException::new);
+
+        post.setHeader(updatedPost.getHeader());
+        post.setBody(updatedPost.getBody());
+
+        postRepository.save(post);
     }
 
     public void deleteById(Integer id) {
