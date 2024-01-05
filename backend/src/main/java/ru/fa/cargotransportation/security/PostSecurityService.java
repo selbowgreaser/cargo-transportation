@@ -20,7 +20,7 @@ public class PostSecurityService {
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
-        return post != null && post.getCreatedBy().equals(user.getUsername());
+        return post.getCreatedBy().equals(user.getUsername());
     }
 
     public boolean isPostOwner(Authentication authentication, PostDto postDto) {
