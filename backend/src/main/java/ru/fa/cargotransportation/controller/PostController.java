@@ -5,16 +5,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.fa.cargotransportation.model.Post;
-import ru.fa.cargotransportation.service.PostService;
 import ru.fa.cargotransportation.controller.dto.CreatedPostDto;
 import ru.fa.cargotransportation.controller.dto.PostDto;
+import ru.fa.cargotransportation.mapper.PostMapper;
+import ru.fa.cargotransportation.model.Post;
+import ru.fa.cargotransportation.service.PostService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -25,20 +24,20 @@ import static org.springframework.http.HttpStatus.*;
 public class PostController {
 
     private final PostService postService;
-    private final ModelMapper modelMapper;
+    private final PostMapper postMapper;
 
     @Operation(summary = "Create a new post")
     @PostMapping
     @ResponseStatus(CREATED)
     public CreatedPostDto create(@Valid @RequestBody PostDto postDto) {
-        return mapPostToCreatedPostDto(postService.save(mapPostDtoToPost(postDto)));
+        return postMapper.mapPostToCreatedPostDto(postService.save(postMapper.mapPostDtoToPost(postDto)));
     }
 
     @Operation(summary = "Get a list of all posts")
     @GetMapping
     @ResponseStatus(OK)
     public List<CreatedPostDto> findAll() {
-        return mapPostsToCreatedPostDtos(postService.findAll());
+        return postMapper.mapPostsToCreatedPostDtos(postService.findAll());
     }
 
     @Operation(summary = "Get post by ID")
@@ -49,7 +48,7 @@ public class PostController {
     @GetMapping("/{id}")
     @ResponseStatus(OK)
     public CreatedPostDto findById(@PathVariable("id") Integer id) {
-        return mapPostToCreatedPostDto(postService.findById(id));
+        return postMapper.mapPostToCreatedPostDto(postService.findById(id));
     }
 
     @Operation(summary = "Update an existing post")
@@ -57,7 +56,7 @@ public class PostController {
     @ResponseStatus(NO_CONTENT)
     @PreAuthorize("@postSecurityService.isPostOwner(authentication, #postDto)")
     public void update(@RequestBody @Valid PostDto postDto) {
-        Post post = mapPostDtoToPost(postDto);
+        Post post = postMapper.mapPostDtoToPost(postDto);
         postService.update(post);
     }
 
@@ -73,17 +72,4 @@ public class PostController {
         postService.deleteById(id);
     }
 
-    private Post mapPostDtoToPost(PostDto postDto) {
-        return modelMapper.map(postDto, Post.class);
-    }
-
-    private CreatedPostDto mapPostToCreatedPostDto(Post post) {
-        return modelMapper.createTypeMap(Post.class, CreatedPostDto.class)
-                .addMapping(post1 -> post1.getCreatedBy().getUsername(), CreatedPostDto::setCreatedBy)
-                .map(post);
-    }
-
-    private List<CreatedPostDto> mapPostsToCreatedPostDtos(List<Post> posts) {
-        return posts.stream().map(this::mapPostToCreatedPostDto).collect(Collectors.toList());
-    }
 }
