@@ -21,6 +21,7 @@ const CargoItem: React.FC<CargoItemProps> = (
         isToastVisible,
         setIsToastVisible,
     }) => {
+
     const [isEditModalOpened, setIsEditModalOpened] = useState(false);
     const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
 

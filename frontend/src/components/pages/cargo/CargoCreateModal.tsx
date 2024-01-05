@@ -36,10 +36,10 @@ const CargoCreateModal: React.FC<CargoCreateModalProps> = (
     }
 
     const [formData, setFormData] = useState<CreateCargoFormData>(defaultFormData);
-    const [isFormFilled, setIsFormFilled] = useState(false)
+    const [isFormFilled, setIsFormFilled] = useState(false);
 
     const [isDateRangePickerVisible, setIsDateRangePickerVisible] = useState(false);
-    const [isStartDateSelect, setIsStartDateSelect] = useState(false)
+    const [isStartDateSelect, setIsStartDateSelect] = useState(false);
     const [dateRange, setDateRange] = useState(
         {
             startDate: new Date(),
@@ -79,7 +79,7 @@ const CargoCreateModal: React.FC<CargoCreateModalProps> = (
         setIsStartDateSelect(!isStartDateSelect);
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({...formData, [e.target.name]: e.target.value});
     };
 
@@ -126,9 +126,12 @@ const CargoCreateModal: React.FC<CargoCreateModalProps> = (
             onClose={handleClose}
         >
             <form onSubmit={handleSubmit} className="bg-white rounded-xl px-8 pt-6 pb-8 w-[700px] h-[450px]">
-                <h2 className="text-xl font-bold mb-4">Добать груз</h2>
-                <p className="mb-6 text-gray-600">Заполните информацию о грузе</p>
-
+                <h2 className="text-xl font-bold mb-4">
+                    Добавить груз
+                </h2>
+                <p className="mb-6 text-gray-600">
+                    Заполните информацию о грузе
+                </p>
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
@@ -233,7 +236,7 @@ const CargoCreateModal: React.FC<CargoCreateModalProps> = (
             onHide={() => setIsSuccessToast(false)}
         />
         <ErrorToast
-            message={"Произошла ошибка при добавлении груза"}
+            message="Произошла ошибка при добавлении груза"
             show={isFailToast}
             onHide={() => setIsFailToast(false)}
         />

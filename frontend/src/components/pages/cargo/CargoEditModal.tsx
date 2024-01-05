@@ -36,7 +36,7 @@ const CargoEditModal: React.FC<CargoEditModalProps> = (
             departureDate: cargo.departureDate,
             arrivalCity: cargo.arrivalCity,
             arrivalDate: cargo.arrivalDate,
-        } as EditCargoFormData
+        }
     }
 
     const [formData, setFormData] = useState<EditCargoFormData>(getFormData(cargo));
