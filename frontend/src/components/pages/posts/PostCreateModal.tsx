@@ -86,7 +86,7 @@ const PostCreateModal: React.FC<PostCreateModalProps> = (
                                 value={formData.header}
                                 onChange={handleChange}
                                 className="appearance-none text-sm border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500 border-gray-200"
-                                placeholder="Как я стал программистом 3 месяца с нуля"
+                                placeholder="Как я стал программистом за 3 месяца с нуля"
                             />
                         </div>
                         <div>
