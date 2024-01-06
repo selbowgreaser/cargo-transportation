@@ -83,6 +83,8 @@ const PostCreateModal: React.FC<PostCreateModalProps> = (
                                 type="text"
                                 name="header"
                                 id="header"
+                                maxLength={255}
+                                required
                                 value={formData.header}
                                 onChange={handleChange}
                                 className="appearance-none text-sm border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500 border-gray-200"
@@ -95,8 +97,10 @@ const PostCreateModal: React.FC<PostCreateModalProps> = (
                             </label>
                             <textarea
                                 id="body"
+                                required
                                 rows={6}
                                 name="body"
+                                maxLength={5000}
                                 value={formData.body}
                                 onChange={handleChange}
                                 className="block py-2 px-3 w-full border text-sm rounded-lg text-gray-700 leading-tight focus:outline-none focus:border-indigo-500 border-gray-200"
