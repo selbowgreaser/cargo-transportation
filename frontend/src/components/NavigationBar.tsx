@@ -21,6 +21,7 @@ const NavigationBar: React.FC<NavigationBarProps> = (
 
     const logout = () => {
         AuthService.logout();
+        setIsCreateModalOpened(false);
         setIsAuth(false);
     }
 
