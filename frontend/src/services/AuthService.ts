@@ -26,7 +26,17 @@ export default class AuthService {
         }
 
         await AuthApiClient.register(user);
-        await this.login(user)
+
+        const response = await AuthApiClient.login({
+            username: formData.username,
+            password: formData.password
+        })
+
+        if (response.token) {
+            localStorage.setItem(LocalStorageKeys.userAuthHeaderKey, `Bearer ${response.token}`);
+            localStorage.setItem(LocalStorageKeys.usernameKey, response.username);
+            localStorage.setItem(LocalStorageKeys.userRoleKey, response.role);
+        }
     }
 
     static async login(formData: SignInFormData) {
@@ -44,7 +54,7 @@ export default class AuthService {
         return false
     }
 
-    static  username() {
+    static username() {
         return localStorage.getItem(LocalStorageKeys.usernameKey);
     }
 
